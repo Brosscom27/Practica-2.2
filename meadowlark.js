@@ -54,6 +54,9 @@ app.get("/Mario", (req, res) =>{
     res.render('Mario', { image: imageData.ruta, url: imageData.url });
 });
 
+app.get('/Roberto', (req, res) => {
+    res.render('roberto');
+});
 app.use((req, res) =>{
     res.status(404);
     res.render('404');
