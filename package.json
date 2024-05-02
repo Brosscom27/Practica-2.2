@@ -2,7 +2,8 @@
   "name": "practica-2.2",
   "version": "1.0.0",
   "description": "Creacion de vistas",
-  "main": "index.js",
+  "type": "module",
+  "main": "meadowlark.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +13,8 @@
   "author": "Mario Cordova",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-handlebars": "^7.1.2"
   }
 }
