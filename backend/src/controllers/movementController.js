@@ -7,6 +7,8 @@ export const createMovement = async (req, res, next) => {
       productId: req.body.productId,
       type: req.body.type,
       quantity: Number(req.body.quantity),
+      reason: req.body.reason,
+      clientFolio: req.body.clientFolio,
       userId: req.user.sub
     });
 

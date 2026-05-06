@@ -3,7 +3,7 @@ import { Movement } from '../models/Movement.js';
 
 export const stockReport = async (req, res, next) => {
   try {
-    const data = await Product.find().select('name currentStock minStock maxStock').sort({ name: 1 });
+    const data = await Product.find({ isActive: true }).select('name currentStock minStock maxStock cost').sort({ name: 1 });
     res.json(data);
   } catch (err) {
     next(err);
@@ -12,7 +12,7 @@ export const stockReport = async (req, res, next) => {
 
 export const lowStockReport = async (req, res, next) => {
   try {
-    const data = await Product.find({ $expr: { $lte: ['$currentStock', '$minStock'] } })
+    const data = await Product.find({ isActive: true, $expr: { $lte: ['$currentStock', '$minStock'] } })
       .select('name currentStock minStock');
     res.json(data);
   } catch (err) {
@@ -32,6 +32,38 @@ export const movementsReport = async (req, res, next) => {
     }
 
     const data = await Movement.find(query).populate('product', 'name').populate('user', 'name');
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const topSales = async (req, res, next) => {
+  try {
+    const data = await Movement.aggregate([
+      { $match: { type: 'salida' } },
+      { $group: { _id: '$product', total: { $sum: '$quantity' } } },
+      { $sort: { total: -1 } },
+      { $limit: 5 },
+      { $lookup: { from: 'products', localField: '_id', foreignField: '_id', as: 'productInfo' } },
+      { $unwind: '$productInfo' },
+      { $project: { name: '$productInfo.name', total: 1 } }
+    ]);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const warehouseDistribution = async (req, res, next) => {
+  try {
+    const data = await Product.aggregate([
+      { $match: { isActive: true } },
+      { $group: { _id: '$warehouse', totalItems: { $sum: '$currentStock' } } },
+      { $lookup: { from: 'warehouses', localField: '_id', foreignField: '_id', as: 'warehouseInfo' } },
+      { $unwind: '$warehouseInfo' },
+      { $project: { name: '$warehouseInfo.name', value: '$totalItems' } }
+    ]);
     res.json(data);
   } catch (err) {
     next(err);

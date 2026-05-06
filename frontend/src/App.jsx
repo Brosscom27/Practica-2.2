@@ -1,12 +1,15 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { CustomThemeProvider } from './context/ThemeContext';
 import { Layout } from './components/Layout';
-import { BreadcrumbHeader } from './components/BreadcrumbHeader';
 import { useAuth } from './context/AuthContext';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { WarehousesPage } from './pages/WarehousesPage';
+import { CategoriesPage } from './pages/CategoriesPage';
+import { KardexPage } from './pages/KardexPage';
+import { SuppliersPage } from './pages/SuppliersPage';
 
 const PrivateRoutes = () => {
   const { isAuthenticated } = useAuth();
@@ -14,11 +17,13 @@ const PrivateRoutes = () => {
 
   return (
     <Layout>
-      <BreadcrumbHeader />
       <Routes>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/warehouses" element={<WarehousesPage />} />
+        <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/products" element={<ProductsPage />} />
+        <Route path="/products/:id/kardex" element={<KardexPage />} />
+        <Route path="/suppliers" element={<SuppliersPage />} />
         <Route path="/reports" element={<ReportsPage />} />
       </Routes>
     </Layout>
@@ -27,10 +32,12 @@ const PrivateRoutes = () => {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/*" element={<PrivateRoutes />} />
-    </Routes>
+    <CustomThemeProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/*" element={<PrivateRoutes />} />
+      </Routes>
+    </CustomThemeProvider>
   );
 }
 

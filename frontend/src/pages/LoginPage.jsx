@@ -3,16 +3,23 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 export const LoginPage = () => {
   const { register, handleSubmit } = useForm();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   const onSubmit = async (values) => {
     try {
       const { data } = await api.post('/auth/login', values);
       login(data);
+      navigate('/');
     } catch {
       setError('No fue posible iniciar sesión');
     }
