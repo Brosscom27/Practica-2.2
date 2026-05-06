@@ -26,9 +26,20 @@ export const ProductsPage = () => {
   
   const [stockType, setStockType] = useState('entrada');
 
-  const { register, handleSubmit, reset } = useForm({ defaultValues: { unit: 'pieza', cost: 0, minStock: 0, maxStock: 0, type: 'directo', unitsPerPackage: 1, preparationTime: 0, taxRate: 0, area: 'General' } });
+  const { register, handleSubmit, reset, watch } = useForm({ defaultValues: { unit: 'pieza', cost: 0, minStock: 0, maxStock: 0, type: 'directo', unitsPerPackage: 1, preparationTime: 0, taxRate: 0, area: 'General' } });
   const { register: registerStock, handleSubmit: handleSubmitStock, reset: resetStock } = useForm({ defaultValues: { type: 'entrada', quantity: 1, reason: '' } });
-  const { register: registerEdit, handleSubmit: handleSubmitEdit, reset: resetEdit } = useForm();
+  const { register: registerEdit, handleSubmit: handleSubmitEdit, reset: resetEdit, watch: watchEdit } = useForm();
+  
+  const checkIsFoodOrDrink = (categoryId) => {
+    if (!categoryId) return false;
+    const cat = categories.find(c => c._id === categoryId);
+    if (!cat) return false;
+    const name = cat.name.toLowerCase();
+    return name.includes('bebida') || name.includes('comida');
+  };
+
+  const isFoodOrDrinkCreate = checkIsFoodOrDrink(watch('category'));
+  const isFoodOrDrinkEdit = checkIsFoodOrDrink(watchEdit('category'));
 
   const load = async () => {
     const params = new URLSearchParams({ page: page + 1, limit: rowsPerPage });
@@ -136,7 +147,7 @@ export const ProductsPage = () => {
             </TextField>
             <TextField type="number" label="Unidades por caja" {...register('unitsPerPackage', { min: 1 })} />
             <TextField label="Área" {...register('area')} />
-            <TextField type="number" label="Tiempo Preparación (min)" {...register('preparationTime', { min: 0 })} />
+            <TextField type="number" label="Tiempo Preparación (min)" {...register('preparationTime', { min: 0 })} disabled={!isFoodOrDrinkCreate} />
             
             <TextField select label="Unidad" {...register('unit')} defaultValue="pieza">
               <MenuItem value="pieza">Pieza</MenuItem><MenuItem value="kilo">Kilo</MenuItem><MenuItem value="litro">Litro</MenuItem><MenuItem value="caja">Caja</MenuItem>
@@ -228,7 +239,7 @@ export const ProductsPage = () => {
             </TextField>
             <TextField type="number" label="Unidades por caja" {...registerEdit('unitsPerPackage', { min: 1 })} />
             <TextField label="Área" {...registerEdit('area')} />
-            <TextField type="number" label="Tiempo Preparación (min)" {...registerEdit('preparationTime', { min: 0 })} />
+            <TextField type="number" label="Tiempo Preparación (min)" {...registerEdit('preparationTime', { min: 0 })} disabled={!isFoodOrDrinkEdit} />
           </Stack>
         </DialogContent>
         <DialogActions>

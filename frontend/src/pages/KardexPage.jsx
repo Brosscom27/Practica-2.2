@@ -44,6 +44,7 @@ export const KardexPage = () => {
                             <TableCell>Tipo</TableCell>
                             <TableCell>Cantidad</TableCell>
                             <TableCell>Motivo</TableCell>
+                            <TableCell>Folio / Cliente</TableCell>
                             <TableCell>Usuario Responsable</TableCell>
                         </TableRow>
                     </TableHead>
@@ -60,12 +61,13 @@ export const KardexPage = () => {
                                 </TableCell>
                                 <TableCell>{m.quantity}</TableCell>
                                 <TableCell>{m.reason}</TableCell>
+                                <TableCell>{m.clientFolio || '-'}</TableCell>
                                 <TableCell>{m.user?.name || m.user?.email || 'Sistema'}</TableCell>
                             </TableRow>
                         ))}
                         {movements.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={5} align="center">No hay movimientos registrados para este producto.</TableCell>
+                                <TableCell colSpan={6} align="center">No hay movimientos registrados para este producto.</TableCell>
                             </TableRow>
                         )}
                     </TableBody>
